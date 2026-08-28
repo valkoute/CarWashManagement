@@ -1,7 +1,9 @@
+using CarWashManagement.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the dependency injection container.
 builder.Services.AddControllers();
+builder.Services.AddSingleton<CustomerService>();
 
 // Add OpenAPI documentation.
 builder.Services.AddOpenApi();
