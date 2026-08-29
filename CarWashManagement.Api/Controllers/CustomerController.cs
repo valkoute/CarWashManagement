@@ -16,19 +16,19 @@ public class CustomersController : ControllerBase
         _customerService = customerService;
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var customers = _customerService.GetAll();
-
-        return Ok(customers);
-    }
-    [HttpGet("{id:guid}")]
-public IActionResult GetById(Guid id)
+   [HttpGet]
+public async Task<IActionResult> GetAll()
 {
-    var customer = _customerService.GetById(id);
+    var customers = await _customerService.GetAllAsync();
 
-    if (customer is null)
+    return Ok(customers);
+}
+    [HttpGet("{id:guid}")]
+public async Task<IActionResult> GetById(Guid id)
+{
+    var customer = await _customerService.GetByIdAsync(id);
+
+    if (customer == null)
     {
         return NotFound();
     }
@@ -37,21 +37,21 @@ public IActionResult GetById(Guid id)
 }
 
  [HttpPost]
-public IActionResult Add(CustomerCreateDto customerDto)
+public async Task<IActionResult> Create(CustomerCreateDto dto)
 {
     var customer = new Customer
     {
-        FirstName = customerDto.FirstName,
-        LastName = customerDto.LastName,
-        Email = customerDto.Email,
-        PhoneNumber = customerDto.PhoneNumber
+        FirstName = dto.FirstName,
+        LastName = dto.LastName,
+        Email = dto.Email,
+        PhoneNumber = dto.PhoneNumber
     };
 
-    var createdCustomer = _customerService.Add(customer);
+    var createdCustomer = await _customerService.AddAsync(customer);
 
-     return CreatedAtAction(
-    nameof(GetById),
-    new { id = createdCustomer.Id },
-    createdCustomer);
+    return CreatedAtAction(
+        nameof(GetById),
+        new { id = createdCustomer.Id },
+        createdCustomer);
 }
 }

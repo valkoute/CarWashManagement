@@ -23,3 +23,6 @@ Thumbs.db
 
 # Local development settings
 appsettings.Local.json
+
+#SQL Server files
+carwashmanagement.db

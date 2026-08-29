@@ -13,4 +13,5 @@ public class Customer
     public string? PhoneNumber { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public List<Vehicle> Vehicles { get; set; } = new();
 }

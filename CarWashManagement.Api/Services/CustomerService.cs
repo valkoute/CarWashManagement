@@ -1,26 +1,31 @@
 using CarWashManagement.Api.Models;
+using CarWashManagement.Api.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarWashManagement.Api.Services;
 
 public class CustomerService
 {
-    private readonly List<Customer> _customers = new();
-
-    public List<Customer> GetAll()
-    {
-        return _customers;
-    }
-
-    public Customer? GetById(Guid id)
+    private readonly CarWashDbContext _context;
+    public CustomerService(CarWashDbContext context)
 {
-    return _customers.FirstOrDefault(customer => customer.Id == id);
+    _context = context;
 }
-    public Customer Add(Customer customer)
-    {
-        customer.Id = Guid.NewGuid();
 
-        _customers.Add(customer);
+    public async Task<List<Customer>> GetAllAsync()
+{
+    return await _context.Customers.ToListAsync();
+}
+  public async Task<Customer?> GetByIdAsync(Guid id)
+{
+    return await _context.Customers
+        .FirstOrDefaultAsync(customer => customer.Id == id);
+}
+public async Task<Customer> AddAsync(Customer customer)
+{
+    _context.Customers.Add(customer);
+    await _context.SaveChangesAsync();
 
-        return customer;
-    }
+    return customer;
+}
 }
