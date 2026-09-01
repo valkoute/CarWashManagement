@@ -105,7 +105,7 @@ public class WashTransactionService
         };
     }
     public async Task<WashTransactionDto?> CompleteWashAsync(Guid id)
-{
+    {
     var transaction = await _context.WashTransactions
         .Include(transaction => transaction.WashStation)
         .FirstOrDefaultAsync(transaction => transaction.Id == id);
