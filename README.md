@@ -269,7 +269,7 @@ The main workflow is working:
  vehicle management
  station management
  station assignment
- wash transactions-
+ wash transactions
  manual completion
  automatic completion
  countdown timer
@@ -285,7 +285,6 @@ Later improvements may include:
 
  protecting historical transactions when deleting customers or vehicles
  better API validation
- preventing multiple active washes for the same vehicle
  better error messages
  automated tests
  logging
@@ -293,6 +292,6 @@ Later improvements may include:
 
 ## Purpose
 
-This project was created to practice backend development with ASP.NET Core, Entity Framework Core, REST APIs, dependency injection, database relationships and business logic but also because as of now, I am currently employed by a self-service car-wash company in Greece. It basically works on the same principals and was designed to simulate the car-wash functions.
+This project was created to practice backend development with ASP.NET Core, Entity Framework Core, REST APIs, dependency injection, database relationships and business logic but also because as of now, I am currently employed by a self-service car-wash company in Greece. It basically works on the same principles and was designed to simulate the car-wash functions.
 
 I kept the architecture simple so the code is easy to understand and explain.
