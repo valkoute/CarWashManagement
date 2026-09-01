@@ -67,7 +67,7 @@ public class WashTransactionService
             };
         }
         var customerHasActiveWash = await _context.WashTransactions
-    .AnyAsync(transaction =>
+        .AnyAsync(transaction =>
         transaction.CustomerId == customerId &&
         transaction.Status == WashTransactionStatus.InProgress);
 
