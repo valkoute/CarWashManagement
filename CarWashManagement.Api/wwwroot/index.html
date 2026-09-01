@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Wash Management</title>
+    <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="topbar">
+            <div>
+                <h1>Car Wash Management</h1>
+                <p>Customers, vehicles, stations and wash operations</p>
+            </div>
+
+            <button id="refreshButton" class="secondary-button">
+                Refresh
+            </button>
+        </header>
+
+        <main>
+            <section class="summary-grid">
+                <div class="summary-card">
+                    <span class="summary-label">Available Stations</span>
+                    <strong id="availableCount">0</strong>
+                </div>
+
+                <div class="summary-card">
+                    <span class="summary-label">Occupied Stations</span>
+                    <strong id="occupiedCount">0</strong>
+                </div>
+
+                <div class="summary-card">
+                    <span class="summary-label">Customers</span>
+                    <strong id="customerCount">0</strong>
+                </div>
+
+                <div class="summary-card">
+                    <span class="summary-label">Transactions</span>
+                    <strong id="transactionCount">0</strong>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="section-heading">
+                    <div>
+                        <h2>Wash Stations</h2>
+                        <p>Current station status</p>
+                    </div>
+                </div>
+
+                <div id="stationGrid" class="station-grid">
+                    <p class="loading-message">Loading stations...</p>
+                </div>
+            </section>
+
+            <section class="three-column-layout">
+                <div class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Add Customer</h2>
+                            <p>Create a new customer</p>
+                        </div>
+                    </div>
+
+                    <form id="customerForm" class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input id="firstName" type="text" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input id="lastName" type="text" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input id="email" type="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input id="phoneNumber" type="text">
+                        </div>
+
+                        <button type="submit" class="primary-button">
+                            Add Customer
+                        </button>
+                    </form>
+
+                    <div id="customerMessage" class="message hidden"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Add Vehicle</h2>
+                            <p>Register a vehicle to a customer</p>
+                        </div>
+                    </div>
+
+                    <form id="vehicleForm" class="form-grid">
+                        <div class="form-group">
+                            <label for="vehicleCustomer">Customer</label>
+                            <select id="vehicleCustomer" required>
+                                <option value="">Select customer</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vehicleLicensePlate">License Plate</label>
+                            <input id="vehicleLicensePlate" type="text" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vehicleMake">Make</label>
+                            <input id="vehicleMake" type="text" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vehicleModel">Model</label>
+                            <input id="vehicleModel" type="text" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vehicleYear">Year</label>
+                            <input id="vehicleYear" type="number" min="1900" max="2100" required>
+                        </div>
+
+                        <button type="submit" class="primary-button">
+                            Add Vehicle
+                        </button>
+                    </form>
+
+                    <div id="vehicleMessage" class="message hidden"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Start Wash</h2>
+                            <p>Assign the next available station</p>
+                        </div>
+                    </div>
+
+                    <form id="startWashForm" class="form-grid">
+                        <div class="form-group">
+                            <label for="washCustomer">Customer</label>
+                            <select id="washCustomer" required>
+                                <option value="">Select customer</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="washVehicle">Vehicle</label>
+                            <select id="washVehicle" required disabled>
+                                <option value="">Select vehicle</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="washProgram">Wash Program</label>
+                            <select id="washProgram">
+                                <option value="0">Basic</option>
+                                <option value="1">Premium</option>
+                                <option value="2">Deluxe</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="primary-button">
+                            Start Wash
+                        </button>
+                    </form>
+
+                    <div id="washMessage" class="message hidden"></div>
+                </div>
+            </section>
+
+            <section class="two-column-layout">
+                <div class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Customers</h2>
+                            <p>Registered customers</p>
+                        </div>
+                    </div>
+
+                    <div id="customerList" class="customer-list">
+                        <p class="loading-message">Loading customers...</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Active Washes</h2>
+                            <p>Washes currently in progress</p>
+                        </div>
+                    </div>
+
+                    <div id="activeWashList" class="activity-list">
+                        <p class="loading-message">Loading active washes...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="section-heading">
+                    <div>
+                        <h2>Recent Transactions</h2>
+                        <p>Latest wash activity</p>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <tr>
+    <th>Customer</th>
+    <th>Vehicle</th>
+    <th>Program</th>
+    <th>Station</th>
+    <th>Status</th>
+    <th>Started</th>
+    <th>Completed</th>
+</tr>
+                            </tr>
+                        </thead>
+
+                        <tbody id="transactionTableBody">
+                            <tr>
+                                <td colspan="5">Loading transactions...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

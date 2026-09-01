@@ -54,4 +54,18 @@ public async Task<IActionResult> Create(CustomerCreateDto dto)
         new { id = createdCustomer.Id },
         createdCustomer);
 }
+[HttpDelete("{id:guid}")]
+public async Task<IActionResult> Delete(Guid id)
+{
+    var deleted = await _customerService.DeleteAsync(id);
+
+    if (!deleted)
+    {
+        return Conflict(
+            "Customer could not be deleted. Remove their vehicles first."
+        );
+    }
+
+    return NoContent();
+}
 }

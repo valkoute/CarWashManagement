@@ -17,13 +17,11 @@ public class VehicleService
     {
         return await _context.Vehicles.ToListAsync();
     }
-
-    public async Task<Vehicle?> GetByIdAsync(Guid id)
-    {
-        return await _context.Vehicles
-            .FirstOrDefaultAsync(vehicle => vehicle.Id == id);
-    }
-
+public async Task<Vehicle?> GetByIdAsync(string licensePlate)
+{
+    return await _context.Vehicles
+        .FirstOrDefaultAsync(vehicle => vehicle.LicensePlate == licensePlate);
+}
     public async Task<Vehicle?> AddAsync(Vehicle vehicle)
 {
     var customerExists = await _context.Customers
@@ -38,6 +36,22 @@ public class VehicleService
     await _context.SaveChangesAsync();
 
     return vehicle;
+}
+public async Task<bool> DeleteAsync(string licensePlate)
+{
+    var vehicle = await _context.Vehicles
+        .FirstOrDefaultAsync(vehicle => vehicle.LicensePlate == licensePlate);
+
+    if (vehicle == null)
+    {
+        return false;
+    }
+
+    _context.Vehicles.Remove(vehicle);
+
+    await _context.SaveChangesAsync();
+
+    return true;
 }
 public async Task<List<Vehicle>> GetByCustomerIdAsync(Guid customerId)
 {

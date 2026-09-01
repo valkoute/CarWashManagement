@@ -28,4 +28,26 @@ public async Task<Customer> AddAsync(Customer customer)
 
     return customer;
 }
+public async Task<bool> DeleteAsync(Guid id)
+{
+    var customer = await _context.Customers
+        .Include(customer => customer.Vehicles)
+        .FirstOrDefaultAsync(customer => customer.Id == id);
+
+    if (customer == null)
+    {
+        return false;
+    }
+
+    if (customer.Vehicles.Count > 0)
+    {
+        return false;
+    }
+
+    _context.Customers.Remove(customer);
+
+    await _context.SaveChangesAsync();
+
+    return true;
+}
 }

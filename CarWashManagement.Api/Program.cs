@@ -9,13 +9,21 @@ builder.Services.AddDbContext<CarWashDbContext>(options =>
     options.UseSqlite("Data Source=carwashmanagement.db"));
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<VehicleService>();
-builder.Services.AddScoped<WashProgramService>();
+builder.Services.AddScoped<WashStationService>();
+builder.Services.AddScoped<DbInitializer>();
+builder.Services.AddScoped<WashTransactionService>();
+builder.Services.AddHostedService<WashCompletionBackgroundService>();
 
 // Add OpenAPI documentation.
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    await initializer.InitializeAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -28,5 +36,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.Run();

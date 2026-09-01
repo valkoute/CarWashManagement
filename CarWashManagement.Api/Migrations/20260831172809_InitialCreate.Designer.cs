@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarWashManagement.Api.Migrations
 {
     [DbContext(typeof(CarWashDbContext))]
-    [Migration("20260829015341_AddWashProgram")]
-    partial class AddWashProgram
+    [Migration("20260831172809_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,15 +51,10 @@ namespace CarWashManagement.Api.Migrations
 
             modelBuilder.Entity("CarWashManagement.Api.Models.Vehicle", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("LicensePlate")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("CustomerId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LicensePlate")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Make")
@@ -73,39 +68,67 @@ namespace CarWashManagement.Api.Migrations
                     b.Property<int>("Year")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("LicensePlate");
 
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("CarWashManagement.Api.Models.WashProgram", b =>
+            modelBuilder.Entity("CarWashManagement.Api.Models.WashStation", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("StationNumber")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("DurationMinutes")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("StationNumber");
+
+                    b.ToTable("WashStations");
+                });
+
+            modelBuilder.Entity("CarWashManagement.Api.Models.WashTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LicensePlate")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Price")
+                    b.Property<DateTime>("StartedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("StationNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WashProgram")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.ToTable("WashPrograms");
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("LicensePlate");
+
+                    b.HasIndex("StationNumber");
+
+                    b.ToTable("WashTransactions");
                 });
 
             modelBuilder.Entity("CarWashManagement.Api.Models.Vehicle", b =>
@@ -117,6 +140,33 @@ namespace CarWashManagement.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("CarWashManagement.Api.Models.WashTransaction", b =>
+                {
+                    b.HasOne("CarWashManagement.Api.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarWashManagement.Api.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("LicensePlate")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarWashManagement.Api.Models.WashStation", "WashStation")
+                        .WithMany()
+                        .HasForeignKey("StationNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Vehicle");
+
+                    b.Navigation("WashStation");
                 });
 
             modelBuilder.Entity("CarWashManagement.Api.Models.Customer", b =>
