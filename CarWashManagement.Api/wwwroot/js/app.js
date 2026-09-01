@@ -762,12 +762,9 @@ async function startWash(event) {
         }
 
         if (response.status === 409) {
-            showMessage(
-                washMessage,
-                "No wash stations are currently available.",
-                false
-            );
+            const message = await response.text();
 
+            showMessage(washMessage,message,false);
             return;
         }
 

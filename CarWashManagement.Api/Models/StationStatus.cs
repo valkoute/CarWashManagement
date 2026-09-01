@@ -4,6 +4,6 @@ public enum StationStatus
 {
     Available,
     Occupied,
-    OutOfService, 
+    OutOfService,
     Maintenance
 }

@@ -42,7 +42,10 @@ public class WashTransactionController : ControllerBase
             dto.CustomerId,
             dto.LicensePlate,
             dto.WashProgram);
-
+        if (result.CustomerAlreadyWashing)
+        {
+            return Conflict("This customer already has a wash in progress.");
+        }
         if (result.VehicleNotFound)
         {
             return NotFound("Vehicle was not found for this customer.");
@@ -55,33 +58,33 @@ public class WashTransactionController : ControllerBase
 
         var transaction = result.Transaction!;
 
-var response = new WashTransactionDto
-{
-    Id = transaction.Id,
-    CustomerId = transaction.CustomerId,
-    LicensePlate = transaction.LicensePlate,
-    WashProgram = (int)transaction.WashProgram,
-    StationNumber = transaction.StationNumber,
-    Status = (int)transaction.Status,
-    StartedAt = transaction.StartedAt,
-    CompletedAt = transaction.CompletedAt
-};
+        var response = new WashTransactionDto
+        {
+            Id = transaction.Id,
+            CustomerId = transaction.CustomerId,
+            LicensePlate = transaction.LicensePlate,
+            WashProgram = (int)transaction.WashProgram,
+            StationNumber = transaction.StationNumber,
+            Status = (int)transaction.Status,
+            StartedAt = transaction.StartedAt,
+            CompletedAt = transaction.CompletedAt
+        };
 
-return CreatedAtAction(
-    nameof(GetById),
-    new { id = response.Id },
-    response);
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = response.Id },
+            response);
     }
     [HttpPost("{id:guid}/complete")]
-public async Task<IActionResult> CompleteWash(Guid id)
-{
-    var transaction = await _washTransactionService.CompleteWashAsync(id);
-
-    if (transaction == null)
+    public async Task<IActionResult> CompleteWash(Guid id)
     {
-        return NotFound();
-    }
+        var transaction = await _washTransactionService.CompleteWashAsync(id);
 
-    return Ok(transaction);
-}
+        if (transaction == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(transaction);
+    }
 }

@@ -66,6 +66,18 @@ public class WashTransactionService
                 VehicleNotFound = true
             };
         }
+        var customerHasActiveWash = await _context.WashTransactions
+    .AnyAsync(transaction =>
+        transaction.CustomerId == customerId &&
+        transaction.Status == WashTransactionStatus.InProgress);
+
+        if (customerHasActiveWash)
+        {
+            return new StartWashResult
+            {
+                CustomerAlreadyWashing = true
+            };
+        }
 
         var availableStation = await _context.WashStations
             .Where(station =>
@@ -106,37 +118,37 @@ public class WashTransactionService
     }
     public async Task<WashTransactionDto?> CompleteWashAsync(Guid id)
     {
-    var transaction = await _context.WashTransactions
-        .Include(transaction => transaction.WashStation)
-        .FirstOrDefaultAsync(transaction => transaction.Id == id);
+        var transaction = await _context.WashTransactions
+            .Include(transaction => transaction.WashStation)
+            .FirstOrDefaultAsync(transaction => transaction.Id == id);
 
-    if (transaction == null)
-    {
-        return null;
+        if (transaction == null)
+        {
+            return null;
+        }
+
+        if (transaction.Status != WashTransactionStatus.InProgress)
+        {
+            return null;
+        }
+
+        transaction.Status = WashTransactionStatus.Completed;
+        transaction.CompletedAt = DateTime.UtcNow;
+
+        transaction.WashStation.Status = StationStatus.Available;
+
+        await _context.SaveChangesAsync();
+
+        return new WashTransactionDto
+        {
+            Id = transaction.Id,
+            CustomerId = transaction.CustomerId,
+            LicensePlate = transaction.LicensePlate,
+            WashProgram = (int)transaction.WashProgram,
+            StationNumber = transaction.StationNumber,
+            Status = (int)transaction.Status,
+            StartedAt = transaction.StartedAt,
+            CompletedAt = transaction.CompletedAt
+        };
     }
-
-    if (transaction.Status != WashTransactionStatus.InProgress)
-    {
-        return null;
-    }
-
-    transaction.Status = WashTransactionStatus.Completed;
-    transaction.CompletedAt = DateTime.UtcNow;
-
-    transaction.WashStation.Status = StationStatus.Available;
-
-    await _context.SaveChangesAsync();
-
-    return new WashTransactionDto
-    {
-        Id = transaction.Id,
-        CustomerId = transaction.CustomerId,
-        LicensePlate = transaction.LicensePlate,
-        WashProgram = (int)transaction.WashProgram,
-        StationNumber = transaction.StationNumber,
-        Status = (int)transaction.Status,
-        StartedAt = transaction.StartedAt,
-        CompletedAt = transaction.CompletedAt
-    };
-}
 }

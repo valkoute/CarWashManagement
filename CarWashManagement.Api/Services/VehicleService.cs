@@ -17,46 +17,46 @@ public class VehicleService
     {
         return await _context.Vehicles.ToListAsync();
     }
-public async Task<Vehicle?> GetByIdAsync(string licensePlate)
-{
-    return await _context.Vehicles
-        .FirstOrDefaultAsync(vehicle => vehicle.LicensePlate == licensePlate);
-}
+    public async Task<Vehicle?> GetByIdAsync(string licensePlate)
+    {
+        return await _context.Vehicles
+            .FirstOrDefaultAsync(vehicle => vehicle.LicensePlate == licensePlate);
+    }
     public async Task<Vehicle?> AddAsync(Vehicle vehicle)
-{
-    var customerExists = await _context.Customers
-        .AnyAsync(customer => customer.Id == vehicle.CustomerId);
-
-    if (!customerExists)
     {
-        return null;
+        var customerExists = await _context.Customers
+            .AnyAsync(customer => customer.Id == vehicle.CustomerId);
+
+        if (!customerExists)
+        {
+            return null;
+        }
+
+        _context.Vehicles.Add(vehicle);
+        await _context.SaveChangesAsync();
+
+        return vehicle;
     }
-
-    _context.Vehicles.Add(vehicle);
-    await _context.SaveChangesAsync();
-
-    return vehicle;
-}
-public async Task<bool> DeleteAsync(string licensePlate)
-{
-    var vehicle = await _context.Vehicles
-        .FirstOrDefaultAsync(vehicle => vehicle.LicensePlate == licensePlate);
-
-    if (vehicle == null)
+    public async Task<bool> DeleteAsync(string licensePlate)
     {
-        return false;
+        var vehicle = await _context.Vehicles
+            .FirstOrDefaultAsync(vehicle => vehicle.LicensePlate == licensePlate);
+
+        if (vehicle == null)
+        {
+            return false;
+        }
+
+        _context.Vehicles.Remove(vehicle);
+
+        await _context.SaveChangesAsync();
+
+        return true;
     }
-
-    _context.Vehicles.Remove(vehicle);
-
-    await _context.SaveChangesAsync();
-
-    return true;
-}
-public async Task<List<Vehicle>> GetByCustomerIdAsync(Guid customerId)
-{
-    return await _context.Vehicles
-        .Where(vehicle => vehicle.CustomerId == customerId)
-        .ToListAsync();
-}
+    public async Task<List<Vehicle>> GetByCustomerIdAsync(Guid customerId)
+    {
+        return await _context.Vehicles
+            .Where(vehicle => vehicle.CustomerId == customerId)
+            .ToListAsync();
+    }
 }

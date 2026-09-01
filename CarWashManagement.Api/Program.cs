@@ -6,7 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the dependency injection container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<CarWashDbContext>(options =>
-    options.UseSqlite("Data Source=carwashmanagement.db"));
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<VehicleService>();
 builder.Services.AddScoped<WashStationService>();

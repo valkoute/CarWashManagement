@@ -16,56 +16,54 @@ public class CustomersController : ControllerBase
         _customerService = customerService;
     }
 
-   [HttpGet]
-public async Task<IActionResult> GetAll()
-{
-    var customers = await _customerService.GetAllAsync();
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var customers = await _customerService.GetAllAsync();
 
-    return Ok(customers);
-}
+        return Ok(customers);
+    }
     [HttpGet("{id:guid}")]
-public async Task<IActionResult> GetById(Guid id)
-{
-    var customer = await _customerService.GetByIdAsync(id);
-
-    if (customer == null)
+    public async Task<IActionResult> GetById(Guid id)
     {
-        return NotFound();
+        var customer = await _customerService.GetByIdAsync(id);
+
+        if (customer == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(customer);
     }
 
-    return Ok(customer);
-}
-
- [HttpPost]
-public async Task<IActionResult> Create(CustomerCreateDto dto)
-{
-    var customer = new Customer
+    [HttpPost]
+    public async Task<IActionResult> Create(CustomerCreateDto dto)
     {
-        FirstName = dto.FirstName,
-        LastName = dto.LastName,
-        Email = dto.Email,
-        PhoneNumber = dto.PhoneNumber
-    };
+        var customer = new Customer
+        {
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            Email = dto.Email,
+            PhoneNumber = dto.PhoneNumber
+        };
 
-    var createdCustomer = await _customerService.AddAsync(customer);
+        var createdCustomer = await _customerService.AddAsync(customer);
 
-    return CreatedAtAction(
-        nameof(GetById),
-        new { id = createdCustomer.Id },
-        createdCustomer);
-}
-[HttpDelete("{id:guid}")]
-public async Task<IActionResult> Delete(Guid id)
-{
-    var deleted = await _customerService.DeleteAsync(id);
-
-    if (!deleted)
-    {
-        return Conflict(
-            "Customer could not be deleted. Remove their vehicles first."
-        );
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = createdCustomer.Id },
+            createdCustomer);
     }
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var deleted = await _customerService.DeleteAsync(id);
 
-    return NoContent();
-}
+        if (!deleted)
+        {
+            return Conflict("Customer could not be deleted. Remove their vehicles first.");
+        }
+
+        return NoContent();
+    }
 }

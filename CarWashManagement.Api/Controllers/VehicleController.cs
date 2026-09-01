@@ -24,7 +24,7 @@ public class VehicleController : ControllerBase
         return Ok(vehicles);
     }
 
-   [HttpGet("{licensePlate}")]
+    [HttpGet("{licensePlate}")]
     public async Task<IActionResult> GetById(string licensePlate)
     {
         var vehicle = await _vehicleService.GetByIdAsync(licensePlate);
@@ -34,8 +34,8 @@ public class VehicleController : ControllerBase
             return NotFound();
         }
 
-    return Ok(vehicle);
-}
+        return Ok(vehicle);
+    }
 
     [HttpPost]
     public async Task<IActionResult> Create(VehicleCreateDto dto)
@@ -62,22 +62,22 @@ public class VehicleController : ControllerBase
             createdVehicle);
     }
     [HttpDelete("{licensePlate}")]
-public async Task<IActionResult> Delete(string licensePlate)
-{
-    var deleted = await _vehicleService.DeleteAsync(licensePlate);
-
-    if (!deleted)
+    public async Task<IActionResult> Delete(string licensePlate)
     {
-        return NotFound();
+        var deleted = await _vehicleService.DeleteAsync(licensePlate);
+
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
-
-    return NoContent();
-}
     [HttpGet("customer/{customerId}")]
-public async Task<IActionResult> GetByCustomerId(Guid customerId)
-{
-    var vehicles = await _vehicleService.GetByCustomerIdAsync(customerId);
+    public async Task<IActionResult> GetByCustomerId(Guid customerId)
+    {
+        var vehicles = await _vehicleService.GetByCustomerIdAsync(customerId);
 
-    return Ok(vehicles);
-}
+        return Ok(vehicles);
+    }
 }

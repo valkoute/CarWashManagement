@@ -9,4 +9,5 @@ public class StartWashResult
     public bool VehicleNotFound { get; set; }
 
     public bool NoStationAvailable { get; set; }
+    public bool CustomerAlreadyWashing { get; set; }
 }

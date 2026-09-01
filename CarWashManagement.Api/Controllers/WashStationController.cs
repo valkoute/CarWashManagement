@@ -2,6 +2,7 @@ using CarWashManagement.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarWashManagement.Api.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class WashStationController : ControllerBase
@@ -30,6 +31,6 @@ public class WashStationController : ControllerBase
             return NotFound();
         }
 
-    return Ok(washStation);
+        return Ok(washStation);
     }
 }
