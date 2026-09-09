@@ -200,6 +200,7 @@ Requirements:
 
  .NET 10 SDK
  Git
+ EF Core
 
 Clone the repository and open the API folder.
 
